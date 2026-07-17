@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.env
+.env.*
+.vscode/
+.idea/
+*.log
+coverage/
+.DS_Store
+
+# Claude Code machine-local settings (do not share)
+.claude/settings.local.json
