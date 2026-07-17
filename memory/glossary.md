@@ -1,12 +1,12 @@
-# glossary.md — Project Brain terms
+# glossary.md — DevBrain terms
 
-> Brain-specific vocabulary. When a term is used in docs, code, or conversation,
+> DevBrain-specific vocabulary. When a term is used in docs, code, or conversation,
 > it means what it says here. Add terms as the project introduces them.
 
 ## Core concepts
 
-- **Brain** — Project Brain; the local service that manages memory and serves
-  MCP tools. ("Brain" = the product; "Claude" = the AI client that uses it.)
+- **DevBrain** — DevBrain; the local service that manages memory and serves
+  MCP tools. ("DevBrain" = the product; "Claude" = the AI client that uses it.)
 - **Vault** — the Obsidian folder of Markdown notes that is the canonical source
   of truth. The human-editable surface.
 - **Memory** — a single unit of knowledge: one Markdown note (with frontmatter,
@@ -48,7 +48,7 @@
 - **Graph expansion** — pulling in neighbors of high-signal results to enrich a
   context bundle.
 - **Context bundle** — a token-budgeted, citation-backed assembly of memory for
-  a given intent (output of `brain_build_context`).
+  a given intent (output of `devbrain_build_context`).
 - **Provenance** — the source path + score + "why" attached to every retrieved
   memory, so Claude can cite and trust it.
 
@@ -58,12 +58,12 @@
 - **Edge relation** — the type of a graph edge: `wikilink`, `tag`, or
   `frontmatter` (explicit `links` in frontmatter).
 - **Orphan** — a note with no inbound or outbound links; surfaced by
-  `brain_graph_orphans`.
+  `devbrain_graph_orphans`.
 
 ## Lifecycle
 
 - **Ingestion** — vault note → derived indexes (chunk, embed, graph-build).
-- **Rebuild** — re-derive stores from the vault (`brain_rebuild --full`). The
+- **Rebuild** — re-derive stores from the vault (`devbrain_rebuild --full`). The
   canonical recovery path.
 - **Upsert** — insert-or-update; idempotent write semantics for memory tools.
 - **Archive** — soft-delete a memory by moving it to `_archive/` (reversible).

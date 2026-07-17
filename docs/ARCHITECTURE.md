@@ -1,6 +1,6 @@
-# Project Brain — Architecture
+# DevBrain — Architecture
 
-This document defines the complete software architecture of Project Brain. It is
+This document defines the complete software architecture of DevBrain. It is
 the authoritative design reference. Implementation must conform to it; deviations
 require an Architecture Decision Record (ADR) in `memory/decisions.md`.
 
@@ -23,14 +23,14 @@ require an Architecture Decision Record (ADR) in `memory/decisions.md`.
 
 ## 2. High-level architecture
 
-Project Brain is a **local service** that Claude Code talks to over the
-**Model Context Protocol (MCP)**. Brain is split into a thin MCP-facing layer and
+DevBrain is a **local service** that Claude Code talks to over the
+**Model Context Protocol (MCP)**. DevBrain is split into a thin MCP-facing layer and
 a set of independent **core subsystems** that do the real work.
 
 ```
  ┌──────────────────────────────────────────────────────────────┐
  │                        Claude Code                           │
- │              (MCP client — calls Brain tools)                │
+ │              (MCP client — calls DevBrain tools)                │
  └───────────────────────────┬──────────────────────────────────┘
                              │ MCP (stdio / HTTP)
  ┌───────────────────────────┴──────────────────────────────────┐
@@ -72,7 +72,7 @@ it is a derived, rebuildable cache.
 ## 3. Major components
 
 ### 3.1 MCP Server Layer
-- **Responsibility:** Expose Brain's capabilities as MCP tools to Claude Code.
+- **Responsibility:** Expose DevBrain's capabilities as MCP tools to Claude Code.
   Parse and validate tool inputs, enforce authorization and rate limits, and
   translate results into MCP responses.
 - **Boundary:** Contains *no* business logic. It is a thin adapter over the Core.
@@ -82,7 +82,7 @@ it is a derived, rebuildable cache.
   or multi-client scenarios).
 
 ### 3.2 Core (Domain)
-The heart of Brain. Each subsystem is a cohesive set of capabilities:
+The heart of DevBrain. Each subsystem is a cohesive set of capabilities:
 
 | Subsystem | Responsibility |
 |---|---|
@@ -188,7 +188,7 @@ Claude → MCP:build_context(intent, scope)
 
 ### 4.4 Rebuild flow — "Indexes are corrupt or model changed"
 ```
-Operator → CLI:brain rebuild --full
+Operator → CLI:devbrain rebuild --full
   → Indexer truncates Vector Store + Graph Store
   → Storage streams all notes
   → Indexer re-chunks, re-embeds, re-builds graph
@@ -218,7 +218,7 @@ swappable, testable, and durable over years.
 
 ## 6. Extension points
 
-Project Brain is built to be extended without modifying core:
+DevBrain is built to be extended without modifying core:
 
 | Extension point | Interface | Example extension |
 |---|---|---|
@@ -239,7 +239,7 @@ touching Core.
 
 ## 7. Cross-cutting concerns
 
-- **Configuration:** Single typed config (`brain.config.ts` / `.brainrc`), layered
+- **Configuration:** Single typed config (`devbrain.config.ts` / `.devbrainrc`), layered
   defaults < env < file < CLI flags. Never scattered magic strings.
 - **Logging:** Structured logging with levels and a quiet mode. No `console.log`
   in library code.
@@ -248,7 +248,7 @@ touching Core.
 - **Concurrency:** A single-writer-per-note lock in Storage. Indexer processes
   changes on a bounded queue to bound resource use.
 - **Observability:** Indexer emits sync-state metrics (notes indexed, pending,
-  failed) queryable via a `brain status` CLI and an MCP tool.
+  failed) queryable via a `devbrain status` CLI and an MCP tool.
 - **Security:** Path traversal guards in Storage (vault is a jail — no writes
   outside it). Optional write-protect / dry-run modes.
 
@@ -256,11 +256,11 @@ touching Core.
 
 - **Vault size:** Chunking + incremental indexing keep indexing O(changes), not
   O(vault). Vector search stays sub-linear via ANN indexes.
-- **Multiple vaults:** Storage is vault-scoped; Brain can attach to multiple
+- **Multiple vaults:** Storage is vault-scoped; DevBrain can attach to multiple
   vaults with namespaced indexes.
 - **Remote embedding (optional, opt-in):** `IEmbedder` can wrap a remote API —
   but only if the user explicitly configures it. Local stays the default.
-- **Multi-client:** HTTP/SSE transport lets several MCP clients share one Brain
+- **Multi-client:** HTTP/SSE transport lets several MCP clients share one DevBrain
   instance and one set of indexes.
 - **Plugin model:** The interface/adapter split means community plugins ship as
   new adapters, registered at the composition root — no core changes needed.
@@ -278,7 +278,7 @@ These must *never* be violated without an ADR:
    `adapters/` and `infrastructure/`.
 5. **Derived stores are rebuildable.** A `rebuild` from the vault always
    reproduces them.
-6. **No silent network.** Brain makes no outbound network calls unless the user
+6. **No silent network.** DevBrain makes no outbound network calls unless the user
    configures an opt-in remote capability.
 
 ## 10. Open questions (to resolve before/within Phase 1)

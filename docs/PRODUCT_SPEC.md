@@ -1,6 +1,6 @@
-# Project Brain — Product Specification
+# DevBrain — Product Specification
 
-> **Phase 1: Product Specification.** This document defines *what* Project Brain is
+> **Phase 1: Product Specification.** This document defines *what* DevBrain is
 > and *why* it exists. It is intentionally free of implementation detail — the
 > *how* lives in `docs/ARCHITECTURE.md`, `docs/MCP_TOOLS.md`, and
 > `docs/TECH_STACK.md`. Read this first; read those only when behavior must be
@@ -20,7 +20,7 @@
 **Make Claude Code behave like an engineer who never forgets anything about the
 project.**
 
-Project Brain is a **local-first AI memory layer for Claude Code**. It turns an
+DevBrain is a **local-first AI memory layer for Claude Code**. It turns an
 Obsidian vault of Markdown notes into a persistent, queryable knowledge base that
 Claude reads on demand and writes back to as durable memory — so that hard-won
 project knowledge survives across sessions, summaries, and reboots, without ever
@@ -55,7 +55,7 @@ Existing fixes make tradeoffs the target users won't accept:
   hoarding.
 
 There is no widely-adopted answer that is **persistent, retrievable, private,
-local, and AI-native** at the same time. Project Brain is that answer.
+local, and AI-native** at the same time. DevBrain is that answer.
 
 ---
 
@@ -85,19 +85,19 @@ local, and AI-native** at the same time. Project Brain is that answer.
   my machine").
 
 ### 3.4 Non-targets (explicit)
-- **Enterprise customers needing central governance, SSO, and SLAs** — Brain is
+- **Enterprise customers needing central governance, SSO, and SLAs** — DevBrain is
   local-first by design; central management is out of scope for the foreseeable
   roadmap.
-- **Users who want a hosted/SaaS memory product** — Brain will never host your
+- **Users who want a hosted/SaaS memory product** — DevBrain will never host your
   data.
-- **Non-developers** — Brain is an AI-coding-assistant memory layer; a general
+- **Non-developers** — DevBrain is an AI-coding-assistant memory layer; a general
   personal-knowledge-manager is adjacent but not the MVP target.
 
 ---
 
 ## 4. Goals
 
-G1. **Persistent memory across sessions.** Knowledge Claude writes to Brain is
+G1. **Persistent memory across sessions.** Knowledge Claude writes to DevBrain is
 recallable in any later session, by ID, by recency, and (MVP) by keyword.
 
 G2. **Privacy by construction.** Everything — vault, indexes, embeddings — runs
@@ -126,29 +126,29 @@ destructive operations are guarded and reversible by default.
 
 ## 5. Non-Goals
 
-N1. **Not a hosted or SaaS product.** There is no Brain cloud. (A *remote
+N1. **Not a hosted or SaaS product.** There is no DevBrain cloud. (A *remote
 embedding model* is an explicit, off-by-default opt-in — that is not hosting
 memory.)
 
-N2. **Not a replacement for Obsidian.** Brain respects Obsidian's conventions
+N2. **Not a replacement for Obsidian.** DevBrain respects Obsidian's conventions
 but does not require Obsidian to be running and does not modify its config.
 
-N3. **Not a general-purpose vector database or RAG platform.** Brain is a memory
+N3. **Not a general-purpose vector database or RAG platform.** DevBrain is a memory
 layer for an AI coding assistant, scoped to a personal/team vault.
 
-N4. **No telemetry or analytics.** Brain makes no "phone home" calls, ever, for
+N4. **No telemetry or analytics.** DevBrain makes no "phone home" calls, ever, for
 product analytics. Crashes are not auto-reported to a server.
 
-N5. **No autonomous, unattended memory writes in the MVP.** Brain records what
+N5. **No autonomous, unattended memory writes in the MVP.** DevBrain records what
 Claude (or the user) explicitly asks it to record. Automatic, reviewable
 proposals are a future phase; unreviewed auto-writing is never a goal.
 
-N6. **Not a Git/backup system.** Brain does not version memory itself in the MVP
+N6. **Not a Git/backup system.** DevBrain does not version memory itself in the MVP
 (though a Git-backed vault is a future idea). The user is responsible for vault
 backups.
 
 N7. **No proprietary dependencies.** The stack is free and open-source
-end-to-end; Brain will not depend on closed-source components.
+end-to-end; DevBrain will not depend on closed-source components.
 
 N8. **No multi-user server in the MVP.** A single local service with stdio
 transport; multi-client/multi-vault is a future phase.
@@ -160,7 +160,7 @@ transport; multi-client/multi-vault is a future phase.
 The MVP proves the end-to-end loop: **store and retrieve project memory from an
 Obsidian vault, over MCP, with keyword search and no embeddings yet.**
 
-M1. **Connect to an Obsidian vault.** Point Brain at a vault directory; Brain
+M1. **Connect to an Obsidian vault.** Point DevBrain at a vault directory; DevBrain
 reads Markdown notes with frontmatter, tags, and `[[wikilinks]]` and treats that
 directory as the canonical source of truth.
 
@@ -172,21 +172,21 @@ M3. **Lexical (keyword) search.** Full-text search over note text — catches ex
 identifiers, error strings, and file names. Metadata filters (tags, dates) narrow
 results.
 
-M4. **Write and update memories.** `brain_remember` creates or updates a Markdown
+M4. **Write and update memories.** `devbrain_remember` creates or updates a Markdown
 note with stable ID, frontmatter, tags, and resolved wikilinks, using upsert
 semantics (idempotent on title/path).
 
 M5. **Incremental indexing.** A file watcher detects vault changes and re-indexes
-only what changed; `brain_status` reports accurate sync state (total, indexed,
+only what changed; `devbrain_status` reports accurate sync state (total, indexed,
 pending, errors).
 
 M6. **Recovery by rebuild.** Derived stores (metadata, FTS index) can be wiped and
 rebuilt from the vault.
 
-M7. **A command-line interface.** `brain index`, `brain search`, `brain status`
+M7. **A command-line interface.** `devbrain index`, `devbrain search`, `devbrain status`
 mirror core capabilities for humans and scripting.
 
-M8. **Live configuration.** `brain_config_get` / `brain_config_set` for
+M8. **Live configuration.** `devbrain_config_get` / `devbrain_config_set` for
 runtime-safe keys (model, log level, budgets); layered config (defaults < env <
 file < CLI).
 
@@ -204,21 +204,21 @@ These are *intentionally out of the MVP* and tracked in `docs/ROADMAP.md`. They 
 listed here so the MVP scope is unambiguous.
 
 - **Semantic search** (Phase 2): meaning-based retrieval via local embeddings +
-  a local vector DB; `brain_search_semantic` and `brain_search_hybrid`.
+  a local vector DB; `devbrain_search_semantic` and `devbrain_search_hybrid`.
 - **Knowledge graph** (Phase 3): neighbors, paths, clusters, orphans from
-  wikilinks/tags; `brain_graph_*` tools.
-- **Automatic, reviewable memory** (Phase 4): `brain_append`, `brain_forget`
-  (archive + confirm-delete), `brain_tag`; a propose→confirm flow for
+  wikilinks/tags; `devbrain_graph_*` tools.
+- **Automatic, reviewable memory** (Phase 4): `devbrain_append`, `devbrain_forget`
+  (archive + confirm-delete), `devbrain_tag`; a propose→confirm flow for
   auto-memory.
-- **Context builder** (Phase 5): `brain_build_context` — token-budgeted,
+- **Context builder** (Phase 5): `devbrain_build_context` — token-budgeted,
   citation-backed context bundles for an intent.
-- **AI knowledge manager** (Phase 6): `brain_extract`, `brain_index_source`,
+- **AI knowledge manager** (Phase 6): `devbrain_extract`, `devbrain_index_source`,
   auto-linking, dedup, gap detection.
 - **Multi-vault** support with namespaced indexes.
-- **HTTP/SSE transport** for multi-client Brain.
+- **HTTP/SSE transport** for multi-client DevBrain.
 - **Optional remote embedding** (opt-in, audited, off by default).
 - **Plugin SDK** for third-party adapters.
-- **Obsidian companion plugin** for in-vault Brain UX.
+- **Obsidian companion plugin** for in-vault DevBrain UX.
 - **Git-backed vault** history and diffs.
 
 ---
@@ -228,18 +228,18 @@ listed here so the MVP scope is unambiguous.
 > Measurable targets are itemized in `docs/SUCCESS_CRITERIA.md`. The headline
 > measures:
 
-S1. **Loop works end-to-end:** a user points Brain at a vault, starts the MCP
+S1. **Loop works end-to-end:** a user points DevBrain at a vault, starts the MCP
 server, and Claude can remember a fact then recall it by keyword in a *fresh*
 session.
 
 S2. **Privacy is real:** an audit of the codebase shows no outbound network call
 outside an off-by-default remote flag, and no telemetry.
 
-S3. **Recovery is real:** `brain_rebuild` from the vault reproduces all derived
+S3. **Recovery is real:** `devbrain_rebuild` from the vault reproduces all derived
 stores; nothing is lost.
 
 S4. **Quality is real:** all MVP tools have passing unit tests; one integration
-test exercises the vault round-trip; one e2e test drives MCP → Brain → sample
+test exercises the vault round-trip; one e2e test drives MCP → DevBrain → sample
 vault.
 
 S5. **Modularity is real:** the layering rule is enforced by lint, and Core can
@@ -254,33 +254,33 @@ search returns in well under a second on a personal vault.
 
 ### Workflow A — "Remember why, then recall it later"
 1. During a session, Claude and the user decide to store a database choice.
-2. Claude calls `brain_remember` with a title, the rationale, and tags
-   (`storage`, `decision`). Brain writes a Markdown note atomically.
-3. Days later, in a fresh session, Claude calls `brain_recall_recent` to
-   re-establish context, then `brain_search_lexical` with "database choice" and
+2. Claude calls `devbrain_remember` with a title, the rationale, and tags
+   (`storage`, `decision`). DevBrain writes a Markdown note atomically.
+3. Days later, in a fresh session, Claude calls `devbrain_recall_recent` to
+   re-establish context, then `devbrain_search_lexical` with "database choice" and
    cites the stored rationale.
 
 ### Workflow B — "Re-establish context at session start"
 1. A new session begins on a long-lived project.
-2. Claude calls `brain_recall_recent` (limit ~10) to see what was touched
+2. Claude calls `devbrain_recall_recent` (limit ~10) to see what was touched
    recently, reads a couple of summaries, and resumes work without the user
    re-explaining the project.
 
 ### Workflow C — "Find the gotcha"
 1. The user hits an obscure error. Months ago they (or Claude) recorded the
    workaround.
-2. Claude searches the error string with `brain_search_lexical`; lexical search
+2. Claude searches the error string with `devbrain_search_lexical`; lexical search
    is exactly the tool for exact error text. The note comes back with provenance;
    Claude applies the workaround and cites it.
 
-### Workflow D — "Human edits the vault, Brain catches up"
+### Workflow D — "Human edits the vault, DevBrain catches up"
 1. The user reorganizes tags and rewrites a note in Obsidian directly.
-2. The file watcher fires; the indexer re-processes only that note. `brain_status`
+2. The file watcher fires; the indexer re-processes only that note. `devbrain_status`
    reflects the new state. Search returns the updated content on the next query.
 
 ### Workflow E — "Indexes corrupted — recover"
 1. The FTS/metadata store is corrupted or the user changed machines.
-2. The user runs `brain rebuild`; Brain re-derives everything from the Markdown.
+2. The user runs `devbrain rebuild`; DevBrain re-derives everything from the Markdown.
    No memory is lost because the files are canonical.
 
 ### Workflow F — "Audit for privacy"
@@ -304,7 +304,7 @@ search returns in well under a second on a personal vault.
    memory, so that I don't re-litigate it next month.
 2. **(MVP)** As a developer, I want to record a bug and its fix as a memory, so
    that the lesson persists past this session.
-3. **(MVP)** As a developer, I want `brain_remember` to be idempotent, so that
+3. **(MVP)** As a developer, I want `devbrain_remember` to be idempotent, so that
    re-saving the same fact doesn't create duplicates.
 4. **(MVP)** As a developer, I want memories written as plain Markdown, so that I
    can read and edit them in Obsidian without any special tool.
@@ -351,21 +351,21 @@ search returns in well under a second on a personal vault.
 22. **(MVP)** As a developer, I want derived indexes to be rebuildable from the
     vault, so that corruption is never data loss.
 23. **(MVP)** As a developer, I want the vault to be the source of truth, so that
-    even if Brain disappears, my memory survives in plain Markdown.
+    even if DevBrain disappears, my memory survives in plain Markdown.
 
 ### Daily operation & reliability
 
-24. **(MVP)** As a developer, I want a `brain_status` command, so that I know
+24. **(MVP)** As a developer, I want a `devbrain_status` command, so that I know
     whether memory is fresh or stale before I rely on it.
 25. **(MVP)** As a developer, I want incremental re-indexing on file change, so
     that editing in Obsidian is reflected quickly without full re-indexing.
-26. **(MVP)** As a developer, I want a CLI (`brain search`, `brain index`,
-    `brain status`), so that I can use Brain from the terminal without an AI
+26. **(MVP)** As a developer, I want a CLI (`devbrain search`, `devbrain index`,
+    `devbrain status`), so that I can use DevBrain from the terminal without an AI
     client.
 27. **(MVP)** As a developer, I want live configuration for safe keys, so that I
     can tune behavior without editing files and restarting.
 28. **(MVP)** As a developer, I want a sample vault and getting-started guide, so
-    that I can try Brain in minutes.
+    that I can try DevBrain in minutes.
 29. **(MVP)** As a developer, I want atomic note writes, so that a crash never
     leaves a half-written memory.
 
@@ -382,7 +382,7 @@ search returns in well under a second on a personal vault.
 34. *(Future)* As a contributor, I want to swap LanceDB for another vector DB via
     an adapter, so that I'm never locked in.
 35. *(Future)* As a contributor, I want an Obsidian companion plugin, so that I
-    can interact with Brain from inside my vault.
+    can interact with DevBrain from inside my vault.
 
 ### Team & scale (future)
 
@@ -391,7 +391,7 @@ search returns in well under a second on a personal vault.
 37. *(Future)* As a team lead, I want multi-vault support, so that I can keep
     personal and work memory separate but queryable.
 38. *(Future)* As a team lead, I want multi-client transport, so that several AI
-    sessions share one Brain instance.
+    sessions share one DevBrain instance.
 39. *(Future)* As a power user, I want gap detection ("you have X and Z but
     nothing connecting them"), so that my knowledge base gets denser over time.
 40. *(Future)* As a power user, I want to index an external codebase read-only,

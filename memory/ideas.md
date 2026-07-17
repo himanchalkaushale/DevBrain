@@ -7,7 +7,7 @@
 
 - **Re-ranking model:** a small local cross-encoder to re-rank hybrid search
   results. Phase 2+; only if quality warrants the complexity.
-- **Query expansion:** Claude-side or Brain-side synonym/concept expansion
+- **Query expansion:** Claude-side or DevBrain-side synonym/concept expansion
   before embedding. Decide where it belongs.
 - **Time-decay scoring:** weight recent memories higher for "current project
   state" queries; keep evergreen memories for conceptual queries. Maybe a
@@ -22,7 +22,7 @@
 - **Entity extraction:** named entities (people, files, concepts) as graph
   nodes beyond tags/wikilinks. Watch quality/cost.
 - **Bidirectional link maintenance:** when a note is renamed, update inbound
-  wikilinks. Obsidian does this in-app; Brain should handle edits made outside
+  wikilinks. Obsidian does this in-app; DevBrain should handle edits made outside
   Obsidian.
 
 ## Memory lifecycle
@@ -36,20 +36,20 @@
 
 ## Integrations
 
-- **Obsidian companion plugin:** in-vault UI for Brain status, proposed
-  memories, graph view. Keep Brain server-side; plugin is a thin client.
-- **Git-backed vault:** version the vault itself; Brain could surface memory
+- **Obsidian companion plugin:** in-vault UI for DevBrain status, proposed
+  memories, graph view. Keep DevBrain server-side; plugin is a thin client.
+- **Git-backed vault:** version the vault itself; DevBrain could surface memory
   history/diffs.
 - **Multi-vault:** namespaced indexes; attach to several vaults (personal,
   work, …).
-- **HTTP/SSE transport:** multi-client Brain (several MCP clients, one index
+- **HTTP/SSE transport:** multi-client DevBrain (several MCP clients, one index
   set).
 
 ## Developer experience
 
-- **`brain doctor`:** health check — vault path valid, Ollama reachable, index
+- **`devbrain doctor`:** health check — vault path valid, Ollama reachable, index
   fresh, no orphan errors.
-- **A `brain repl`** for exploring memory interactively during development.
+- **A `devbrain repl`** for exploring memory interactively during development.
 - **Benchmark suite:** index/search latency over a large fixture vault, tracked
   over time so we catch regressions.
 
@@ -57,7 +57,7 @@
 
 - **Pluggable storage backends** beyond Obsidian (e.g., a plain-Markdown
   folder, a Git repo) via `IStorage`.
-- **Streaming context:** stream `brain_build_context` results as they assemble,
+- **Streaming context:** stream `devbrain_build_context` results as they assemble,
   rather than one bundle.
 - **Local LLM for extraction:** use a small local model (via Ollama) for the
   Phase-6 extractor instead of relying on Claude — keeps extraction offline.

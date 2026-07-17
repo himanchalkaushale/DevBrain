@@ -1,4 +1,4 @@
-# Project Brain — Design Decisions
+# DevBrain — Design Decisions
 
 > **Phase 1: Product Specification.** This document records the architectural
 > decisions that are already made, each with the reasoning that makes them
@@ -24,9 +24,9 @@ knowledge exists only in a derived store.
 
 **Reason.** The product exists to provide *durable, private, portable* memory.
 Markdown is plain text — diffable, editable in any tool, readable decades hence,
-and independent of Brain. Making files canonical means (a) corruption of any
+and independent of DevBrain. Making files canonical means (a) corruption of any
 derived store is a minutes-long rebuild, not data loss; (b) the memory survives
-Brain itself; (c) the user is never locked into a binary format. This collapses
+DevBrain itself; (c) the user is never locked into a binary format. This collapses
 the entire class of "the index got corrupted" disasters into a routine
 operation.
 
@@ -50,7 +50,7 @@ technology lives only in `adapters/` and `infrastructure/`. All wiring happens i
 a single composition root. The rule is enforced by ESLint boundary config, not
 just convention.
 
-**Reason.** Brain must survive years of tech churn — new embedding models, new
+**Reason.** DevBrain must survive years of tech churn — new embedding models, new
 vector DBs, new MCP features, new extraction sources. The only way that's
 possible without rewrites is if every external technology is swappable behind an
 interface. Layering is also what makes Core unit-testable with in-memory fakes
@@ -97,7 +97,7 @@ much more safety.
 
 ## ADR-0004 — Local-first & privacy-first: no outbound network by default ✅
 
-**Decision.** Brain makes no outbound network calls unless the user explicitly
+**Decision.** DevBrain makes no outbound network calls unless the user explicitly
 opts into a specific remote capability (e.g., a remote embedder). Embeddings run
 via local Ollama. There is no telemetry, no analytics, no crash-reporting phone
 home, ever. The only network-capable code lives behind a single interface
@@ -331,7 +331,7 @@ ships with a simpler, more robust local transport.
 
 **Status:** Proposed — resolve at Phase 1 kickoff.
 
-**Decision (proposed).** A small, typed CLI framework for the `brain` command.
+**Decision (proposed).** A small, typed CLI framework for the `devbrain` command.
 
 **Reason.** The CLI is a thin caller of core; the framework choice is
 low-stakes and swappable. `citty` is modern/ESM; `commander` is battle-tested.
@@ -354,7 +354,7 @@ seams; the *implementation* is deferred.
 persist — with the smallest correct surface. Lexical search (FTS5) already proves
 the loop and catches the exact-match cases (error strings, identifiers) that are
 the most common real queries. Deferring embeddings avoids requiring Ollama setup
-just to try Brain, keeps the MVP dependency-light, and lets Phase 1 focus on the
+just to try DevBrain, keeps the MVP dependency-light, and lets Phase 1 focus on the
 vault/Storage/MCP foundation that everything else builds on.
 
 **Alternatives considered.**
@@ -376,7 +376,7 @@ search is the obvious next increment, and the seams are already in place.
   future-proof, portable source of truth — and a format the target users often
   already use.
 - **Why MCP (ADR-0011):** the native interface for an AI coding assistant; the
-  standard Claude Code already speaks, so Brain plugs in without a custom
+  standard Claude Code already speaks, so DevBrain plugs in without a custom
   protocol.
 - **Why local storage (ADR-0004, 0005, 0006):** no servers, no daemons, no
   network — the structural expression of local-first/privacy-first.

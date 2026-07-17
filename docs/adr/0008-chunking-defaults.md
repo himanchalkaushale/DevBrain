@@ -12,7 +12,7 @@
 
 ## Context
 
-When Project Brain indexes a note for semantic search (Phase 2), the note is
+When DevBrain indexes a note for semantic search (Phase 2), the note is
 split into **chunks** — the unit that is embedded, stored in the vector DB, and
 cited back to the user. The chunking strategy governs three downstream properties
 at once:
@@ -49,7 +49,7 @@ not reopen the heading-aware algorithm class.
 
 ## Decision
 
-Project Brain's default chunking is **structure-aware Markdown chunking with
+DevBrain's default chunking is **structure-aware Markdown chunking with
 atomic block units**, configured as follows:
 
 | Setting | Default | Configurable? |
@@ -79,7 +79,7 @@ atomic block units**, configured as follows:
    it is emitted as one over-target chunk (not truncated) and **logged** at warn
    level so the user can see and refactor it. It is never silently split.
 5. **Flat-note fallback:** a note with no headings is treated as a single section
-   and sub-chunked by the prose rule — so a quick `brain_remember` log entry does
+   and sub-chunked by the prose rule — so a quick `devbrain_remember` log entry does
    not become one giant chunk.
 
 ### Defaults rationale

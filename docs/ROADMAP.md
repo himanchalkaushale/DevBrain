@@ -1,4 +1,4 @@
-# Project Brain — Development Roadmap
+# DevBrain — Development Roadmap
 
 The project is delivered in six phases. Each phase is independently valuable —
 every phase ships a working slice, not a partial subsystem. No phase begins
@@ -19,22 +19,22 @@ vault, over MCP, with no embeddings yet. Proves the end-to-end loop.
   Vitest, build, CI).
 - `IStorage` port + Obsidian adapter: parse Markdown + frontmatter, resolve
   `[[wikilinks]]`, atomic writes, path-traversal guards.
-- SQLite-backed metadata + **FTS5 lexical search** (`brain_search_lexical`).
+- SQLite-backed metadata + **FTS5 lexical search** (`devbrain_search_lexical`).
 - MCP server (stdio) with tools:
-  - `brain_recall_by_id`, `brain_recall_recent`
-  - `brain_search_lexical`
-  - `brain_remember`
-  - `brain_status`, `brain_rebuild`, `brain_config_get`/`set`
-- CLI: `brain index`, `brain search`, `brain status`.
+  - `devbrain_recall_by_id`, `devbrain_recall_recent`
+  - `devbrain_search_lexical`
+  - `devbrain_remember`
+  - `devbrain_status`, `devbrain_rebuild`, `devbrain_config_get`/`set`
+- CLI: `devbrain index`, `devbrain search`, `devbrain status`.
 - File watcher (chokidar) → incremental re-index of metadata/FTS.
 - Composition root wiring + typed config.
 - Sample vault in `examples/` + a getting-started doc.
 - Tests: unit (co-located) + integration (vault round-trip) + one e2e (MCP
-  client → Brain → sample vault).
+  client → DevBrain → sample vault).
 
-**Exit criteria:** A user points Brain at their vault, starts the MCP server,
+**Exit criteria:** A user points DevBrain at their vault, starts the MCP server,
 and Claude Code can remember a fact, then recall it by keyword in a fresh
-session. All Phase-1 tools have tests. `brain_status` reports accurate
+session. All Phase-1 tools have tests. `devbrain_status` reports accurate
 sync state.
 
 ---
@@ -48,7 +48,7 @@ sync state.
 - `IVectorStore` port + LanceDB adapter.
 - Heading-aware chunker with configurable size/overlap.
 - Indexer pipeline extended: chunk → embed → upsert (incremental, hash-gated).
-- Tools: `brain_search_semantic`, `brain_search_hybrid` (semantic + lexical
+- Tools: `devbrain_search_semantic`, `devbrain_search_hybrid` (semantic + lexical
   merge + re-rank).
 - Dimensionality-mismatch detection → forced rebuild.
 - Embedding batching + Ollama-down fallback (lexical-only with warning).
@@ -56,7 +56,7 @@ sync state.
 - Tests: fake embedder for unit tests; integration test against a real Ollama
   (marked, opt-in in CI).
 
-**Exit criteria:** `brain_search_hybrid("how do we handle auth")` returns the
+**Exit criteria:** `devbrain_search_hybrid("how do we handle auth")` returns the
 auth notes even when the word "auth" never appears. Rebuild reproduces the
 vector store from the vault.
 
@@ -69,15 +69,15 @@ vector store from the vault.
 **Deliverables:**
 - `IGraphStore` port + SQLite adapter (nodes/edges/tags).
 - Graph Builder: `[[wikilinks]]`, tags, and frontmatter relations → edges.
-- Tools: `brain_graph_neighbors`, `brain_graph_path`, `brain_graph_clusters`
-  (Louvain/WCC), `brain_graph_orphans`.
+- Tools: `devbrain_graph_neighbors`, `devbrain_graph_path`, `devbrain_graph_clusters`
+  (Louvain/WCC), `devbrain_graph_orphans`.
 - Graph expansion integrated as an optional step in retrieval.
-- CLI: `brain graph neighbors|path|orphans`.
+- CLI: `devbrain graph neighbors|path|orphans`.
 - Visualization export (JSON/GraphML) — not an in-process UI.
 - Tests: graph construction + traversal correctness on a fixture vault.
 
 **Exit criteria:** Claude can answer "how does X relate to Y?" with a real path,
-and `brain_graph_orphans` surfaces under-linked notes. Full graph rebuilds from
+and `devbrain_graph_orphans` surfaces under-linked notes. Full graph rebuilds from
 the vault.
 
 ---
@@ -87,8 +87,8 @@ the vault.
 **Goal:** Reduce manual note-writing; make remembering low-friction and safe.
 
 **Deliverables:**
-- `brain_append` (section-aware), `brain_forget` (archive/default + confirm
-  hard-delete with pre-delete backup), `brain_tag`.
+- `devbrain_append` (section-aware), `devbrain_forget` (archive/default + confirm
+  hard-delete with pre-delete backup), `devbrain_tag`.
 - A **reviewable auto-memory proposal** flow: the Extractor proposes, nothing
   auto-writes without an explicit confirmation path.
 - Idempotent upserts keyed on title/path; duplicate detection.
@@ -110,14 +110,14 @@ citation-backed context bundles.
 **Deliverables:**
 - `IContextStrategy` port + default strategy (recall + recency + graph expand +
   budget + dedupe).
-- Tool: `brain_build_context` returning a ready-to-paste bundle + a source
+- Tool: `devbrain_build_context` returning a ready-to-paste bundle + a source
   manifest.
 - Token budgeting (estimator) and ordering for coherence.
 - Provenance/citation in every bundle.
-- CLI: `brain context <intent>`.
+- CLI: `devbrain context <intent>`.
 - Tests: budget enforcement, dedupe, manifest accuracy.
 
-**Exit criteria:** Given an intent, `brain_build_context` returns a bundle that
+**Exit criteria:** Given an intent, `devbrain_build_context` returns a bundle that
 fits a configured token budget and cites its sources; Claude loads it and works
 with accurate, scoped memory.
 
@@ -129,8 +129,8 @@ with accurate, scoped memory.
 deduplicating, and surfacing gaps.
 
 **Deliverables:**
-- `brain_extract` (conversation/code/text → proposed memories, reviewable).
-- `brain_index_source` (index external code/docs read-only).
+- `devbrain_extract` (conversation/code/text → proposed memories, reviewable).
+- `devbrain_index_source` (index external code/docs read-only).
 - Auto-linking suggestions (propose `[[wikilinks]]` between related notes).
 - Deduplication and merge suggestions.
 - Gap detection: "you have notes about X and Z but nothing connecting them."
@@ -139,14 +139,14 @@ deduplicating, and surfacing gaps.
 
 **Exit criteria:** Claude can take a conversation log, propose structured
 memories, and — after review — write them as well-linked, de-duplicated notes.
-`brain_index_source` lets Claude recall symbols from an external codebase.
+`devbrain_index_source` lets Claude recall symbols from an external codebase.
 
 ---
 
 ## Cross-cutting work (continuous, not phased)
 
 - **Docs:** each phase ships its user docs in `docs/user/`.
-- **Observability:** `brain_status` and structured logs grow with each phase.
+- **Observability:** `devbrain_status` and structured logs grow with each phase.
 - **Performance:** incremental indexing and ANN tuning are revisited per phase.
 - **Security:** path guards, write-protect, and audit of any new network path.
 - **Community:** `CONTRIBUTING.md`, issue/PR templates, and an ADR process live
@@ -155,7 +155,7 @@ memories, and — after review — write them as well-linked, de-duplicated note
 ## Post-1.0 ideas (not scheduled)
 
 - Multi-vault support with namespaced indexes.
-- HTTP/SSE transport for multi-client Brain.
+- HTTP/SSE transport for multi-client DevBrain.
 - Optional remote embedding (opt-in, audited).
 - Plugin SDK for third-party adapters.
-- Obsidian plugin companion for in-vault Brain UX.
+- Obsidian plugin companion for in-vault DevBrain UX.

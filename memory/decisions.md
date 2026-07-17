@@ -11,14 +11,14 @@ Format: `ADR-NNNN — Title — Status — Date`
 ## ADR-0001 — Markdown is canonical; all indexes are derived
 - **Status:** Accepted
 - **Date:** 2026-07-17
-- **Context:** Brain needs durable, private memory. We must choose what the
+- **Context:** DevBrain needs durable, private memory. We must choose what the
   source of truth is: the Markdown files, or the derived indexes (vectors,
   graph)?
 - **Decision:** The Obsidian vault (Markdown) is the single source of truth.
   Embeddings, the vector DB, and the graph are derived, rebuildable indexes.
 - **Consequences:** Any derived store can be deleted and rebuilt from the vault.
   We must never store knowledge *only* in a derived store. Rebuild performance
-  matters (incremental indexing). The memory survives Brain itself.
+  matters (incremental indexing). The memory survives DevBrain itself.
 
 ## ADR-0002 — Layered architecture; dependencies point inward/downward only
 - **Status:** Accepted
@@ -47,7 +47,7 @@ Format: `ADR-NNNN — Title — Status — Date`
 - **Date:** 2026-07-17
 - **Context:** Cloud memory layers ship user knowledge to servers. We must be
   verifiably private.
-- **Decision:** Brain makes no outbound network calls unless the user opts into
+- **Decision:** DevBrain makes no outbound network calls unless the user opts into
   a specific remote capability (e.g., a remote embedder). Embeddings run via
   local Ollama. No telemetry/analytics, ever.
 - **Consequences:** The only network-capable code lives behind `IEmbedder` and an
@@ -93,7 +93,7 @@ Format: `ADR-NNNN — Title — Status — Date`
   store and embeddings are implemented in Phase 2. The tech *decisions*
   (0005/0007) are Accepted now so Phase 1 leaves the right seams
   (`IVectorStore`, `IEmbedder`); the *implementation* is deferred.
-- **Consequences:** MVP requires no model server (no Ollama) to try Brain —
+- **Consequences:** MVP requires no model server (no Ollama) to try DevBrain —
   lower first-run friction. Semantic search ("auth"↔"authentication") is a
   Phase-2 increment. Full rationale in `docs/DESIGN_DECISIONS.md` and scope in
   `docs/MVP_SCOPE.md`.

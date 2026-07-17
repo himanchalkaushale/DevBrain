@@ -1,4 +1,4 @@
-# Project Brain — Requirements
+# DevBrain — Requirements
 
 > **Phase 1: Product Specification.** This document translates the product spec
 > (`docs/PRODUCT_SPEC.md`) into testable requirements. It is organized into
@@ -36,10 +36,10 @@
 ### 1.2 FR-2 — Recall (retrieve specific memories)
 
 - **FR-2.1 (MVP)** The system MUST retrieve a memory by its stable ID or vault
-  path (`brain_recall_by_id`).
+  path (`devbrain_recall_by_id`).
 - **FR-2.2 (MVP)** The system MUST list the most recently created/modified
   memories, filterable by an optional recency window and tags
-  (`brain_recall_recent`).
+  (`devbrain_recall_recent`).
 - **FR-2.3 (MVP)** A just-written memory MUST be recallable by ID immediately,
   before indexing completes.
 - **FR-2.4 (MVP)** Every recalled memory MUST include provenance: stable ID,
@@ -48,7 +48,7 @@
 ### 1.3 FR-3 — Search (find relevant memories)
 
 - **FR-3.1 (MVP)** The system MUST provide lexical/keyword full-text search over
-  note text (`brain_search_lexical`).
+  note text (`devbrain_search_lexical`).
 - **FR-3.2 (MVP)** Search results MUST be ranked and MUST support metadata
   filters (tags, date range).
 - **FR-3.3 (MVP)** Search results MUST be bounded by a `limit` and respect a
@@ -56,14 +56,14 @@
 - **FR-3.4 (MVP)** Each search result MUST include provenance: note ID, path, the
   matched chunk, a score, and tags.
 - **FR-3.5 (Future)** The system SHOULD provide semantic search via local
-  embeddings (`brain_search_semantic`) and a merged hybrid search
-  (`brain_search_hybrid`).
+  embeddings (`devbrain_search_semantic`) and a merged hybrid search
+  (`devbrain_search_hybrid`).
 
 ### 1.4 FR-4 — Remember (write/update memories)
 
 - **FR-4.1 (MVP)** The system MUST create or update a memory note
-  (`brain_remember`) given a title, content, and optional tags/links/frontmatter.
-- **FR-4.2 (MVP)** `brain_remember` MUST use upsert semantics: repeated calls
+  (`devbrain_remember`) given a title, content, and optional tags/links/frontmatter.
+- **FR-4.2 (MVP)** `devbrain_remember` MUST use upsert semantics: repeated calls
   with the same title/path produce the same end state (idempotent).
 - **FR-4.3 (MVP)** On create, the system MUST assign a stable, sortable,
   URL-safe ID and populate frontmatter (`id`, `type`, `created`, `updated`,
@@ -75,21 +75,21 @@
 - **FR-4.6 (MVP)** Writes MUST be atomic: a crash leaves either the prior or the
   new file, never a torn one.
 - **FR-4.7 (Future)** The system SHOULD support section-aware append
-  (`brain_append`), reversible archive (`brain_forget`), and tag-only edits
-  (`brain_tag`), with destructive operations requiring an explicit confirm.
+  (`devbrain_append`), reversible archive (`devbrain_forget`), and tag-only edits
+  (`devbrain_tag`), with destructive operations requiring an explicit confirm.
 
 ### 1.5 FR-5 — Indexing & synchronization
 
 - **FR-5.1 (MVP)** The system MUST maintain derived indexes (metadata + FTS)
   from the vault and MUST rebuild them from the vault on demand
-  (`brain_rebuild`).
+  (`devbrain_rebuild`).
 - **FR-5.2 (MVP)** The system MUST index incrementally: only changed notes are
   re-processed, gated on a per-note content hash.
 - **FR-5.3 (MVP)** A file watcher MUST detect create/modify/delete/move in the
   vault and trigger re-indexing, debounced to absorb burst saves.
-- **FR-5.4 (MVP)** `brain_status` MUST report vault path, total notes, indexed
+- **FR-5.4 (MVP)** `devbrain_status` MUST report vault path, total notes, indexed
   notes, pending count, last sync, and errors.
-- **FR-5.5 (MVP)** Derived stores MUST be reproducible: `brain_rebuild --full`
+- **FR-5.5 (MVP)** Derived stores MUST be reproducible: `devbrain_rebuild --full`
   reproduces metadata and FTS from the vault alone.
 - **FR-5.6 (Future)** The system SHOULD build a vector store (Phase 2) and a
   knowledge graph (Phase 3), each rebuildable from the vault.
@@ -97,7 +97,7 @@
 ### 1.6 FR-6 — MCP server & tool surface
 
 - **FR-6.1 (MVP)** The system MUST expose its capabilities as MCP tools
-  (namespace `brain_`) consumable by Claude Code, over stdio transport.
+  (namespace `devbrain_`) consumable by Claude Code, over stdio transport.
 - **FR-6.2 (MVP)** Every tool MUST validate its inputs with a schema before any
   business logic runs; invalid input is rejected with a structured error.
 - **FR-6.3 (MVP)** Every tool MUST return structured (typed) outputs, not
@@ -111,7 +111,7 @@
 
 ### 1.7 FR-7 — CLI
 
-- **FR-7.1 (MVP)** The system MUST provide a `brain` CLI with at least `index`,
+- **FR-7.1 (MVP)** The system MUST provide a `devbrain` CLI with at least `index`,
   `search`, and `status` commands mirroring core capabilities.
 - **FR-7.2 (MVP)** The CLI MUST be a thin caller of core; it MUST NOT duplicate
   business logic.
@@ -120,7 +120,7 @@
 
 - **FR-8.1 (MVP)** The system MUST provide typed configuration layered as
   defaults < environment < config file < CLI flags.
-- **FR-8.2 (MVP)** `brain_config_get` / `brain_config_set` MUST operate on
+- **FR-8.2 (MVP)** `devbrain_config_get` / `devbrain_config_set` MUST operate on
   runtime-safe keys only (model, log level, budgets); vault path and destructive
   toggles MUST NOT be settable live without a restart.
 - **FR-8.3 (MVP)** Configuration MUST be typed and centralized — no scattered
@@ -154,12 +154,12 @@
   vault writer; the indexer is the sole writer of derived stores. Queries are
   read-only.
 - **NFR-7 (MVP)** **Open-source.** Every dependency MUST be free and
-  open-source; no proprietary component may be required to build or run Brain.
+  open-source; no proprietary component may be required to build or run DevBrain.
 - **NFR-8 (MVP)** **Cross-platform.** The system MUST run on Windows, macOS, and
   Linux; Windows is a first-class platform (it is the primary dev platform).
 - **NFR-9 (MVP)** **Observability.** The system MUST emit structured logs with
   levels and a quiet mode; no raw `console.log` in library code. Indexer sync
-  state MUST be queryable (`brain_status`).
+  state MUST be queryable (`devbrain_status`).
 - **NFR-10 (MVP)** **Typed errors.** Errors MUST be a typed hierarchy carrying
   actionable context; raw stack traces MUST NOT leak to MCP clients.
 - **NFR-11 (MVP)** **Determinism in tests.** Core unit tests MUST run with
@@ -245,7 +245,7 @@
 - **SC-5 (Future)** The system SHOULD support multiple vaults with namespaced
   indexes.
 - **SC-6 (Future)** The system SHOULD support multiple MCP clients sharing one
-  Brain instance (HTTP/SSE transport).
+  DevBrain instance (HTTP/SSE transport).
 - **SC-7 (Future)** The system SHOULD permit a remote embedding backend
   (opt-in) for users who trade privacy for scale, without changing Core.
 
@@ -279,9 +279,9 @@
   official SDK and remain compatible with Claude Code's MCP client.
 - **CO-3 (MVP)** Memory files MUST be plain Markdown with Obsidian-compatible
   frontmatter and `[[wikilinks]]` — readable and editable in Obsidian (or any
-  text editor) with no Brain-specific binary format required to read them.
-- **CO-4 (MVP)** A memory written by Brain MUST remain readable and useful even
-  if Brain is uninstalled (format longevity; no vendor lock-in at the data
+  text editor) with no DevBrain-specific binary format required to read them.
+- **CO-4 (MVP)** A memory written by DevBrain MUST remain readable and useful even
+  if DevBrain is uninstalled (format longevity; no vendor lock-in at the data
   layer).
 - **CO-5 (MVP)** Derived stores MUST be reproducible by anyone holding the same
   vault (and, for future phases, the same embedding model) — no hidden state.
@@ -297,23 +297,23 @@
 > These are the binary checks that define "Phase 1 is done." Each maps to one or
 > more requirements above and to `docs/SUCCESS_CRITERIA.md`.
 
-- **AC-1 (MVP) ✅ maps FR-1, FR-6, CO-1, CO-2:** Brain connects to a real
+- **AC-1 (MVP) ✅ maps FR-1, FR-6, CO-1, CO-2:** DevBrain connects to a real
   Obsidian vault on Windows and Linux, exposes MCP tools over stdio, and Claude
   Code can invoke them.
-- **AC-2 (MVP) ✅ maps FR-4:** Claude can create a memory with `brain_remember`,
+- **AC-2 (MVP) ✅ maps FR-4:** Claude can create a memory with `devbrain_remember`,
   and the note appears in the vault as valid Markdown with frontmatter and a
   stable ID.
-- **AC-3 (MVP) ✅ maps FR-4.2:** Re-calling `brain_remember` with the same
+- **AC-3 (MVP) ✅ maps FR-4.2:** Re-calling `devbrain_remember` with the same
   title/path produces no duplicate (idempotent upsert).
 - **AC-4 (MVP) ✅ maps FR-2, FR-3:** In a *fresh* session, Claude can recall the
-  stored memory by ID (`brain_recall_by_id`) and find it by keyword
-  (`brain_search_lexical`).
-- **AC-5 (MVP) ✅ maps FR-2.2:** `brain_recall_recent` lists recently changed
+  stored memory by ID (`devbrain_recall_by_id`) and find it by keyword
+  (`devbrain_search_lexical`).
+- **AC-5 (MVP) ✅ maps FR-2.2:** `devbrain_recall_recent` lists recently changed
   memories scoped by optional tags/window.
 - **AC-6 (MVP) ✅ maps FR-5:** Editing a note in Obsidian triggers incremental
-  re-indexing; `brain_status` reflects the change; the updated content is
+  re-indexing; `devbrain_status` reflects the change; the updated content is
   searchable.
-- **AC-7 (MVP) ✅ maps FR-5.5, NFR-4:** `brain_rebuild --full` reproduces all
+- **AC-7 (MVP) ✅ maps FR-5.5, NFR-4:** `devbrain_rebuild --full` reproduces all
   derived stores from the vault; no memory is lost when derived stores are
   deleted first.
 - **AC-8 (MVP) ✅ maps SR-1:** A write targeting a path outside the vault is
@@ -324,9 +324,9 @@
   fakes (no filesystem/DB/network), and the layering rule is enforced by lint.
 - **AC-11 (MVP) ✅ maps NFR-12:** Every MVP tool has documentation and a passing
   unit test; one integration test covers the vault round-trip; one e2e test
-  drives MCP → Brain → sample vault.
-- **AC-12 (MVP) ✅ maps FR-7, FR-8:** The `brain` CLI runs `index`, `search`,
-  `status`, and `brain_config_get`/`set` works for runtime-safe keys.
+  drives MCP → DevBrain → sample vault.
+- **AC-12 (MVP) ✅ maps FR-7, FR-8:** The `devbrain` CLI runs `index`, `search`,
+  `status`, and `devbrain_config_get`/`set` works for runtime-safe keys.
 - **AC-13 (MVP) ✅ maps FR-9:** Search and recall results include provenance
   (source path, score/why) consumable by Claude for citation.
 

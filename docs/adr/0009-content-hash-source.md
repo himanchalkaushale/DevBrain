@@ -16,7 +16,7 @@
 
 ## Context
 
-Incremental indexing keeps Brain's steady-state cost **O(changes), not O(vault)**
+Incremental indexing keeps DevBrain's steady-state cost **O(changes), not O(vault)**
 (`docs/ARCHITECTURE.md §8`; success criterion C-15). The mechanism is a per-note
 **content hash** the Indexer records as sync state — `hash(note) → indexed`
 (`docs/MEMORY_ARCHITECTURE.md §3.1`) — so unchanged notes are skipped on
@@ -63,7 +63,7 @@ existence of hash-gated incremental indexing.
 
 ## Decision
 
-Project Brain's incremental-indexing gate is a **normalized full-content hash** of
+DevBrain's incremental-indexing gate is a **normalized full-content hash** of
 each note, computed over **frontmatter + body** after a small, well-defined
 normalization. `mtime` (+ size) is used only as an **optional fast pre-filter**,
 never as the authoritative gate. A raw full-file byte hash is available as an
@@ -111,7 +111,7 @@ infrastructure), and is unit-testable with string fixtures.
   content changes re-index. (Path is metadata, reflected in derived rows by the
   re-index that a move may or may not trigger depending on whether content also
   changed — the path is always reconciled on the next re-index of that note.)
-- **`brain_rebuild --full`:** sync state is reset and every note is re-hashed and
+- **`devbrain_rebuild --full`:** sync state is reset and every note is re-hashed and
   re-indexed (`docs/ARCHITECTURE.md §4.4`).
 
 ---
@@ -226,7 +226,7 @@ avoids even the parse for unchanged files in the common case.
 | Normalization changes → all hashes stale | Version the normalization (a `hashVersion` on the sync-state table); on mismatch, auto-trigger a one-time `--full` and log it. Derived stores are rebuildable (ADR-0001). |
 | Frontmatter key-reorder should not re-index, but a *value* change must | Stable-order serialization covers keys; values are compared by content. Test both cases explicitly. |
 | Move/rename leaves stale path in derived store | On a watcher move event, the Indexer updates the stored path for the stable `note_id` regardless of hash; content still gated by hash. (Path is metadata, not content.) |
-| mtime pre-filter misses a content-only change that also reset mtime | The pre-filter triggers hashing on mtime *or* size mismatch; if both somehow match yet content changed (e.g., in-place rewrite of same size + restored mtime), the periodic `brain_rebuild` (or `brain_status` drift check) reconciles. Documented as a known, rare drift source. |
+| mtime pre-filter misses a content-only change that also reset mtime | The pre-filter triggers hashing on mtime *or* size mismatch; if both somehow match yet content changed (e.g., in-place rewrite of same size + restored mtime), the periodic `devbrain_rebuild` (or `devbrain_status` drift check) reconciles. Documented as a known, rare drift source. |
 | Strict (raw-bytes) mode surprises users with churn | Off by default; documented in `docs/user/configuration.md`; the normalized default is the supported path. |
 | Indexer tempted to re-hash raw bytes | Ownership rule documented: Storage provides the normalized hash; Indexer stores it. Enforced in review and by keeping the hash function in `core/` model code. |
 
@@ -245,10 +245,10 @@ avoids even the parse for unchanged files in the common case.
   This **layers on top of** C (the note hash still gates "did anything change";
   chunk hashes gate "which chunks re-embed") — it does not replace the note-level
   gate. Composes with ADR-0008's per-chunk provenance.
-- **`brain_status` drift detection:** a future `brain doctor`/`brain_status`
+- **`devbrain_status` drift detection:** a future `devbrain doctor`/`devbrain_status`
   enhancement can sample-verify stored hashes against fresh hashes to catch
   silent drift (the rare mtime+size match with content change). Idea-level, per
-  `memory/ideas.md` (`brain doctor`).
+  `memory/ideas.md` (`devbrain doctor`).
 - **Remote/embedder-agnostic:** the hash is independent of the embedder, so a
   model swap (ADR-0007) — gated by dimensionality, not content hash — composes
   without touching incremental indexing.
@@ -264,7 +264,7 @@ avoids even the parse for unchanged files in the common case.
 - `docs/REQUIREMENTS.md` FR-5.2 (per-note content hash gate), PR-1 (single-note
   re-index < 1 s), SC-2 (steady-state O(changes))
 - `docs/SUCCESS_CRITERIA.md` C-15 (O(changes)), C-16 (fast single-note re-index),
-  C-20 (crash-resumable), C-21 (`brain_status` sync state)
+  C-20 (crash-resumable), C-21 (`devbrain_status` sync state)
 - `docs/MVP_SCOPE.md` V1-8 (incremental indexing gated on a per-note content
   hash — this ADR pins the final form)
 - `memory/architecture.md` ("hash source is a Phase-1 decision" — this ADR

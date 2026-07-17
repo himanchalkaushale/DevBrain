@@ -1,4 +1,4 @@
-# Project Brain — Memory Architecture
+# DevBrain — Memory Architecture
 
 How the six pillars — **Obsidian**, **Markdown**, **Embeddings**, **Vector DB**,
 **Knowledge Graph**, and **Claude Code** — interlock to form a durable, local
@@ -14,7 +14,7 @@ until the next rebuild. Lose the Markdown and you've lost the actual memory.
 
 | Pillar | Role | Mutable by human? |
 |---|---|---|
-| **Obsidian** | The editor and UX layer. Brain never depends on Obsidian running; it only respects Obsidian's conventions (folders, frontmatter, `[[wikilinks]]`, tags). | Yes — it's the editor. |
+| **Obsidian** | The editor and UX layer. DevBrain never depends on Obsidian running; it only respects Obsidian's conventions (folders, frontmatter, `[[wikilinks]]`, tags). | Yes — it's the editor. |
 | **Markdown** | Canonical storage format for every memory. Plain text, diffable, future-proof. | Yes — the source of truth. |
 | **Embeddings** | Meaning-based retrieval. Turns text into vectors so "auth" finds notes about "authentication" even without the exact word. | No — derived. |
 | **Vector DB** | Stores embeddings + metadata; answers "most similar to X". | No — derived. |
@@ -111,8 +111,8 @@ Markdown is canonical. Searchability follows milliseconds later.
 | **Lexical** (FTS) | Exact strings, error messages, file names, code | Paraphrases, synonyms |
 | **Graph** (traversal) | Relationships, "what else is connected to this" | Topical relevance on its own |
 
-`brain_search_hybrid` runs semantic + lexical and merges; `brain_build_context`
-adds graph expansion on top. No single modality is enough — that's why Brain
+`devbrain_search_hybrid` runs semantic + lexical and merges; `devbrain_build_context`
+adds graph expansion on top. No single modality is enough — that's why DevBrain
 maintains all three indexes.
 
 ## 5. Chunking strategy
@@ -154,12 +154,12 @@ maintains all three indexes.
 
 ## 9. Claude Code integration
 
-- Claude Code is an **MCP client**. Brain is an **MCP server**.
-- **On-demand, not preload:** Claude calls `brain_build_context` or
-  `brain_search_hybrid` when it needs memory — it does not ingest the whole vault
+- Claude Code is an **MCP client**. DevBrain is an **MCP server**.
+- **On-demand, not preload:** Claude calls `devbrain_build_context` or
+  `devbrain_search_hybrid` when it needs memory — it does not ingest the whole vault
   into context.
 - **Write-back is explicit:** Claude decides what's worth remembering and calls
-  `brain_remember`. Brain never auto-writes without an extractor proposing and a
+  `devbrain_remember`. DevBrain never auto-writes without an extractor proposing and a
   confirmation path (see Group F tools).
 - **Provenance in, provenance out:** results carry source paths so Claude can
   cite memory in its reasoning and the user can verify.
@@ -167,7 +167,7 @@ maintains all three indexes.
 ## 10. Privacy & local-first guarantees
 
 - Embeddings run via local Ollama. **No text leaves the machine for indexing.**
-- Brain makes **no outbound network calls** unless the user opts into a remote
+- DevBrain makes **no outbound network calls** unless the user opts into a remote
   capability (e.g., a remote embedder) in config.
 - The vault, vector DB, and graph DB all live under a single user-chosen data
   directory. Nothing is uploaded.
@@ -190,17 +190,17 @@ maintains all three indexes.
 
 | Failure | Recovery |
 |---|---|
-| Vector DB corrupted | `brain_rebuild --full` from vault. |
+| Vector DB corrupted | `devbrain_rebuild --full` from vault. |
 | Graph DB corrupted | Same — rebuild from vault. |
 | Embedding model changed | Detected via dimensionality mismatch → forces rebuild. |
-| Vault file deleted | Gone from indexes on next index pass; `brain_forget` had archived if used. |
+| Vault file deleted | Gone from indexes on next index pass; `devbrain_forget` had archived if used. |
 | Ollama down at index time | Indexer queues + retries; search falls back to lexical-only with a warning. |
 | Partial write crash | Atomic write means either the old or new file exists, never a torn one. |
 
 ## 13. Why this architecture is durable
 
 - **Format longevity:** Markdown outlives any specific tool. The memory survives
-  Brain itself.
+  DevBrain itself.
 - **No vendor lock-in:** every derived store has a pluggable interface.
 - **Reproducibility:** anyone can rebuild identical indexes from the same vault
   + same model.

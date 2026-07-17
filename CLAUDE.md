@@ -1,10 +1,10 @@
-# CLAUDE.md — Project Brain AI Guide
+# CLAUDE.md — DevBrain AI Guide
 
-> This is the **permanent AI guide** for the Project Brain repository. Any AI
+> This is the **permanent AI guide** for the DevBrain repository. Any AI
 > agent (Claude Code or otherwise) working in this repo reads this file **first**,
 > before writing or changing any code. It takes precedence over general habits.
 
-Project Brain is a **local-first AI memory layer for Claude Code**. It gives
+DevBrain is a **local-first AI memory layer for Claude Code**. It gives
 Claude long-term project memory using an Obsidian vault as a persistent,
 queryable knowledge base — instead of relying on the finite, volatile
 conversation context.
@@ -18,7 +18,7 @@ project. Follow it. When it's wrong or incomplete, update it (see
 ## Project Vision
 
 ### What it is
-Project Brain is a local service that Claude Code talks to over the
+DevBrain is a local service that Claude Code talks to over the
 **Model Context Protocol (MCP)**. It turns an Obsidian vault of Markdown notes
 into a queryable memory: semantic search, lexical search, knowledge-graph
 traversal, and token-budgeted context assembly. Claude reads memory on demand and
@@ -27,15 +27,15 @@ writes memory back as durable Markdown.
 ### Why it exists
 Claude Code's context window is volatile and finite. Hard-won knowledge — why a
 decision was made, how a subsystem works, which bug was fixed and how — is lost
-when a conversation ends or is summarized. Project Brain makes that knowledge
+when a conversation ends or is summarized. DevBrain makes that knowledge
 **persistent, editable, and retrievable** without sacrificing privacy.
 
 ### What problem it solves
 - **Forgetting across sessions:** the answer Claude found yesterday is gone today.
-  Brain remembers it.
+  DevBrain remembers it.
 - **Context bloat:** instead of loading huge transcripts, Claude loads only the
-  relevant memory (the `brain_build_context` tool).
-- **Privacy:** cloud memory layers ship your knowledge to a server. Brain keeps
+  relevant memory (the `devbrain_build_context` tool).
+- **Privacy:** cloud memory layers ship your knowledge to a server. DevBrain keeps
   everything on your machine — vault, embeddings, indexes, all local.
 
 ### Long-term vision
@@ -55,7 +55,7 @@ against them.
   The vault, vector DB, and graph DB all live in a user-chosen data directory.
 - **Open-source.** Built for community contribution and long-term stewardship.
   Permissive license. No proprietary dependencies.
-- **Privacy-first.** No telemetry, no analytics, no third-party requests. Brain
+- **Privacy-first.** No telemetry, no analytics, no third-party requests. DevBrain
   makes no outbound network calls unless the user explicitly opts into a remote
   capability. Verifiable by audit.
 - **Modular.** Each concern is a separate module behind a stable interface.
@@ -77,7 +77,7 @@ derived store and you lose nothing but search speed until the next rebuild.
 Lose the Markdown and you've lost the actual memory. This invariant is sacred.
 
 ### Why modularity matters
-Brain must survive years of churn: new embedding models, new vector DBs, new
+DevBrain must survive years of churn: new embedding models, new vector DBs, new
 MCP features, new extraction sources. The only way that's possible is if each
 piece is **swappable behind an interface**. Today's LanceDB can become
 tomorrow's Qdrant without touching Core. Today's nomic can become tomorrow's
@@ -123,7 +123,7 @@ Claude (and any contributor) **always**:
 8. **One writer per store.** Storage owns the vault; the Indexer owns the
    vector/graph stores. Never write to a store you don't own.
 9. **Derived stores are rebuildable.** Any change to indexing must keep
-   `brain_rebuild --full` able to reproduce the stores from the vault.
+   `devbrain_rebuild --full` able to reproduce the stores from the vault.
 10. **No silent network.** Any new outbound-call capability must be off by
     default and audited.
 
@@ -168,7 +168,7 @@ Claude (and any contributor) **always**:
 - Unit tests for all Core logic and pure functions, using in-memory fakes for
   ports. Fast and deterministic.
 - Integration tests for adapter↔store behavior against a fixture vault.
-- E2E test for the MCP↔Brain↔vault loop per phase.
+- E2E test for the MCP↔DevBrain↔vault loop per phase.
 - No test depends on the network unless explicitly marked and opt-in.
 - A `FakeEmbedder` (deterministic) is used for semantic-search unit tests — no
   real model required.
@@ -194,7 +194,7 @@ Always record:
   "how-it-actually-works" that isn't in the design docs).
 - **Future ideas** — `memory/ideas.md`.
 - **Technical debt** — `memory/technical-debt.md` (what we deferred and why).
-- **Glossary** — `memory/glossary.md` (Brain-specific terms).
+- **Glossary** — `memory/glossary.md` (DevBrain-specific terms).
 
 See `memory/README.md` for the full catalog. **If you learn something
 non-obvious while working, write it to the right memory file before closing the
@@ -232,7 +232,7 @@ live status in `memory/roadmap.md`.
 2. **Semantic Search:** Ollama embeddings + LanceDB; semantic + hybrid search.
 3. **Knowledge Graph:** SQLite graph; neighbors, paths, clusters, orphans.
 4. **Automatic Memory:** append/forget/tag; reviewable auto-memory proposals.
-5. **Context Builder:** `brain_build_context` — token-budgeted, cited bundles.
+5. **Context Builder:** `devbrain_build_context` — token-budgeted, cited bundles.
 6. **AI Knowledge Manager:** extraction, auto-linking, dedup, gap detection.
 
 Cross-cutting (continuous): docs, observability, performance, security,

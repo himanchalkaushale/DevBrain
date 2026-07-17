@@ -1,4 +1,4 @@
-# Project Brain — Technology Stack
+# DevBrain — Technology Stack
 
 Every choice below is **free, local-first, and open-source**. The guiding rule:
 no component requires a server process we don't own, no component phones home,
@@ -28,7 +28,7 @@ non-obvious.
 - **Why:** The MCP SDK and most local-AI libraries target Node. LTS gives us a
   stable, supported runtime. A single language across CLI, MCP server, and
   indexer keeps the team small and the toolchain unified.
-- **Note:** Brain ships as an ESM package (`"type": "module"`). CJS interop is
+- **Note:** DevBrain ships as an ESM package (`"type": "module"`). CJS interop is
   handled only where a dependency demands it.
 
 ---
@@ -74,7 +74,7 @@ non-obvious.
 
 ### LanceDB (primary recommendation)
 - **Why:** **Local, file-based, no server process** — a perfect local-first fit.
-  Embedded (in-process library), so Brain doesn't manage a separate DB daemon.
+  Embedded (in-process library), so DevBrain doesn't manage a separate DB daemon.
   Native Arrow columnar format → fast kNN, efficient storage, good for
   incremental upserts. Solid TypeScript/Node bindings.
 - **How we use it:** `adapters/vector-lancedb/` implements `IVectorStore` with a
@@ -100,7 +100,7 @@ non-obvious.
   local service. Keeps the "one data directory, no daemons" promise.
 - **How we use it:**
   - `graph-sqlite/` implements `IGraphStore` (nodes/edges/tags + traversal).
-  - FTS5 powers `brain_search_lexical`.
+  - FTS5 powers `devbrain_search_lexical`.
   - Co-located in one DB file for simplicity (decision tracked as an ADR).
 - **Why not a dedicated graph DB:** Our graph is small (vault-sized) and our
   queries are simple (neighbors, paths, components). SQLite handles these
@@ -160,7 +160,7 @@ non-obvious.
     — no Ollama, no DB, no filesystem. Fast and deterministic.
   - **Integration** (`tests/`): real SQLite + LanceDB against a fixture vault;
     optional real Ollama (marked, opt-in via env, not required in CI).
-  - **E2E** (`tests/e2e/`): an MCP client drives Brain against a sample vault —
+  - **E2E** (`tests/e2e/`): an MCP client drives DevBrain against a sample vault —
     proves the whole loop.
 - **Fakes:** a deterministic `FakeEmbedder` (hash-based vectors) keeps semantic
   tests reproducible without a model.
@@ -170,7 +170,7 @@ non-obvious.
 ## CLI
 
 ### `citty` or `commander`
-- **Why:** A small, typed CLI framework for the `brain` command (`index`,
+- **Why:** A small, typed CLI framework for the `devbrain` command (`index`,
   `search`, `status`, `rebuild`, `graph …`). `citty` is modern/ESM; `commander`
   is the battle-tested default. Pick at Phase 1 kickoff — low-stakes, swappable.
 - The CLI is a thin caller of Core, never duplicating logic.
@@ -193,7 +193,7 @@ non-obvious.
 ## CI & quality gates
 
 ### GitHub Actions
-- **Why:** Free for OSS, runs on Windows + Linux (Brain must work on Windows —
+- **Why:** Free for OSS, runs on Windows + Linux (DevBrain must work on Windows —
   our primary dev platform — and Linux).
 - **Gates:** install → lint (incl. boundary rules) → typecheck → unit tests →
   integration tests (no Ollama required) → build. E2E and real-Ollama tests run

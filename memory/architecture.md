@@ -18,7 +18,7 @@
    `core/`.
 4. **All external access through ports.** Concrete tech lives only in
    `adapters/` and `infrastructure/`.
-5. **Derived stores are rebuildable.** `brain_rebuild --full` reproduces them.
+5. **Derived stores are rebuildable.** `devbrain_rebuild --full` reproduces them.
 6. **No silent network.** No outbound calls unless an opt-in remote capability
    is configured.
 

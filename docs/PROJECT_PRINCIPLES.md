@@ -1,7 +1,7 @@
-# Project Brain — Project Principles
+# DevBrain — Project Principles
 
 > **Phase 1: Product Specification.** This document states the engineering
-> philosophy that governs Project Brain. Principles are not aspirations — they
+> philosophy that governs DevBrain. Principles are not aspirations — they
 > are the rules every decision, review, and line of code is measured against.
 > Where a principle conflicts with convenience, the principle wins.
 >
@@ -13,7 +13,7 @@
 
 ## P1. Local-first
 
-**What it means.** Brain runs entirely on the user's machine. The vault, derived
+**What it means.** DevBrain runs entirely on the user's machine. The vault, derived
 indexes, embeddings, and configuration all live in a user-chosen data
 directory. No feature *requires* a network round-trip to function. A laptop on a
 plane is a fully supported environment.
@@ -23,10 +23,10 @@ architecture decisions, bug histories, internal identifiers — to a server the
 user doesn't control. For the target users (solo developers, privacy-conscious
 teams), that's a dealbreaker, not a preference. Local-first is also what makes
 "nothing leaves your machine" a *verifiable* claim rather than a privacy policy
-you have to trust. If Brain only worked online, it would solve one problem
+you have to trust. If DevBrain only worked online, it would solve one problem
 (forgetting) by creating a worse one (exposure).
 
-**Costs.** Brain can't offer managed multi-device sync out of the box; the user
+**Costs.** DevBrain can't offer managed multi-device sync out of the box; the user
 brings their own sync (Git, Syncthing, a network drive) if they want one. Some
 capabilities (a shared team index, a remote embedding backend) require extra
 design effort to keep optional and opt-in.
@@ -36,7 +36,7 @@ design effort to keep optional and opt-in.
 ## P2. Privacy-first
 
 **What it means.** No telemetry, no analytics, no crash-reporting "phone home."
-Brain makes no outbound network calls unless the user explicitly opts into a
+DevBrain makes no outbound network calls unless the user explicitly opts into a
 specific remote capability. The only network-capable code lives behind a single
 interface, gated by an off-by-default flag, so the claim is auditable by
 inspection.
@@ -62,7 +62,7 @@ truth. Embeddings, the vector DB, the knowledge graph, and the FTS index are
 a derived store.
 
 **Why it exists.** Markdown is plain text: diffable, future-proof, editable in
-any tool, and readable decades from now. If Brain disappears tomorrow, the
+any tool, and readable decades from now. If DevBrain disappears tomorrow, the
 memory survives intact. If a derived store corrupts, a rebuild restores it. This
 turns "data loss" into "index rebuild" — a minutes-long inconvenience instead of
 a catastrophe. It also means the user is never locked in: the format outlives
@@ -81,7 +81,7 @@ no shortcut ever stores knowledge *only* in a derived index.
 only in adapters, and all wiring happens in a single composition root.
 Dependencies point inward and downward only; core knows no infrastructure.
 
-**Why it exists.** Brain must survive years of churn: new embedding models, new
+**Why it exists.** DevBrain must survive years of churn: new embedding models, new
 vector DBs, new MCP features, new extraction sources. The only way that's
 possible without rewrites is if every piece is *swappable behind an interface*.
 Today's LanceDB can become tomorrow's Qdrant without touching Core. This is
@@ -116,14 +116,14 @@ treat that as a feature, not a tax.
 
 ## P6. AI-native
 
-**What it means.** Brain is designed around an AI coding assistant as the
+**What it means.** DevBrain is designed around an AI coding assistant as the
 primary client. Retrieval is on-demand (load only what's relevant) rather than
 preload-the-vault. Results carry provenance so the AI can cite and trust them.
 Writes are explicit (the AI decides what's worth remembering) with a
 reviewable path before any autonomy.
 
 **Why it exists.** Memory that isn't retrievable by the agent that needs it is
-just a notebook. Brain's value is that Claude Code can *use* the memory at the
+just a notebook. DevBrain's value is that Claude Code can *use* the memory at the
 right moment — which means the interface must be tool-shaped, scoped, and
 provenance-bearing. Loading everything into context defeats the purpose (that's
 the problem we're solving, not the solution).
@@ -161,7 +161,7 @@ require an ADR and a changelog entry. Additive changes (new optional inputs, new
 tools) are non-breaking. The MCP tool surface is versioned. Memory files use a
 future-proof plain format so old data stays readable.
 
-**Why it exists.** Brain's memory is meant to outlast versions of Brain itself.
+**Why it exists.** DevBrain's memory is meant to outlast versions of DevBrain itself.
 If every release invalidated the vault or the tool contracts, users would stop
 trusting the memory layer — exactly the volatility we exist to cure.
 Compatibility is how a long-term project earns the right to keep being used.
@@ -193,7 +193,7 @@ naming conventions and co-located tests.
 
 **What it means.** Every derived store is rebuildable from the vault. Writes are
 atomic and crash-safe. Indexing is resumable. The canonical recovery path
-(`brain_rebuild`) always exists. Nothing a crash or a corrupted index can take
+(`devbrain_rebuild`) always exists. Nothing a crash or a corrupted index can take
 from you is real memory — only the Markdown is.
 
 **Why it exists.** A memory layer that can silently lose memories is worse than

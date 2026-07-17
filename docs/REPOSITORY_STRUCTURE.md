@@ -1,4 +1,4 @@
-# Project Brain — Repository Structure
+# DevBrain — Repository Structure
 
 The repository is organized to make the architecture's layering rule
 (deps point inward/downward only) **structurally enforceable**. A file in `core/`
@@ -11,7 +11,7 @@ that tries to import `lancedb` should fail review, and ideally fail the build.
 ## Top level
 
 ```
-project-brain/
+devbrain/
 ├── .github/                  # CI workflows, issue/PR templates, funding
 ├── .vscode/                  # Recommended editor settings (suggestions only)
 ├── docs/                     # Design + user documentation (Markdown)
@@ -41,7 +41,7 @@ Mirrors the architecture's layers. **Import direction is downward only.**
 
 ```
 src/
-├── cli/                      # `brain` command-line entry point
+├── cli/                      # `devbrain` command-line entry point
 │   ├── index.ts              #   arg parsing, command dispatch
 │   ├── commands/             #   one file per command (index, search, …)
 │   └── output.ts             #   human-readable formatting
@@ -102,7 +102,7 @@ boundary config) makes violating these a lint error, not just a convention.
 
 - **Unit tests** live next to the code they test: `foo.ts` → `foo.test.ts`.
 - **Integration tests** (multiple modules / real stores) live in `tests/`.
-- **E2E tests** (MCP client ↔ Brain ↔ a sample vault) live in `tests/e2e/`.
+- **E2E tests** (MCP client ↔ DevBrain ↔ a sample vault) live in `tests/e2e/`.
 
 ## `docs/` — documentation
 
@@ -144,7 +144,7 @@ memory/
 
 ## `examples/`, `scripts/`, `.github/`
 
-- `examples/` — a tiny sample Obsidian vault, example `brain.config.ts`, and MCP
+- `examples/` — a tiny sample Obsidian vault, example `devbrain.config.ts`, and MCP
   client snippets showing how Claude Code connects.
 - `scripts/` — dev helpers (e.g., `bootstrap-vault.ts`, `release.ts`).
 - `.github/` — CI (lint, typecheck, test on Windows + Linux), issue templates,

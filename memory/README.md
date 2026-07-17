@@ -1,8 +1,8 @@
-# Project Brain — Repository Memory
+# DevBrain — Repository Memory
 
 This directory is the **repository's own long-term brain**: meta-knowledge about
 the project itself — decisions, conventions, debt, ideas. It is **not** user
-knowledge (that lives in the user's Obsidian vault via Brain at runtime).
+knowledge (that lives in the user's Obsidian vault via DevBrain at runtime).
 
 Every AI agent and human contributor reads the relevant files here before
 working on a task, and **writes back** what they learn. See
@@ -20,7 +20,7 @@ working on a task, and **writes back** what they learn. See
 | `meeting-notes.md` | Decisions and takeaways from design discussions / syncs (AI or human). Date-stamped. |
 | `ideas.md` | Future ideas, proposals, and open questions — not committed. The backlog of "what if." |
 | `technical-debt.md` | What we deferred, why, and the cost. The honest list of shortcuts and their payoff dates. |
-| `glossary.md` | Brain-specific terms and their definitions, so "chunk," "port," "vault," etc. always mean the same thing. |
+| `glossary.md` | DevBrain-specific terms and their definitions, so "chunk," "port," "vault," etc. always mean the same thing. |
 
 ## How to use it
 

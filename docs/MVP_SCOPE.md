@@ -1,4 +1,4 @@
-# Project Brain — MVP Scope (Version 1)
+# DevBrain — MVP Scope (Version 1)
 
 > **Phase 1: Product Specification.** This document draws an unambiguous line
 > around **Version 1** (the MVP — Phase 1 of `docs/ROADMAP.md`: Local Memory +
@@ -7,7 +7,7 @@
 > end-to-end loop with the smallest correct surface; everything else is a later
 > increment behind seams that are already designed in.
 >
-> **The MVP thesis:** a user points Brain at an Obsidian vault, starts the MCP
+> **The MVP thesis:** a user points DevBrain at an Obsidian vault, starts the MCP
 > server, and Claude Code can **remember** a fact and **recall it by keyword in a
 > fresh session** — all local, all private, with derived stores rebuildable from
 > the vault.
@@ -26,17 +26,17 @@
   path-traversal jail and atomic (temp-file + rename) writes.
 
 ### 1.2 Recall (retrieve specific memories)
-- **V1-4.** `brain_recall_by_id` — fetch a memory by stable ID or vault path,
+- **V1-4.** `devbrain_recall_by_id` — fetch a memory by stable ID or vault path,
   with optional body inclusion.
-- **V1-5.** `brain_recall_recent` — list most-recently changed memories,
+- **V1-5.** `devbrain_recall_recent` — list most-recently changed memories,
   filterable by recency window and tags.
 
 ### 1.3 Search
-- **V1-6.** `brain_search_lexical` — keyword/full-text search (FTS5) over note
+- **V1-6.** `devbrain_search_lexical` — keyword/full-text search (FTS5) over note
   text, with tag/date filters, ranked results, and a `limit`/token budget.
 
 ### 1.4 Remember (write/update)
-- **V1-7.** `brain_remember` — create-or-update a memory with stable ID,
+- **V1-7.** `devbrain_remember` — create-or-update a memory with stable ID,
   frontmatter, tags, resolved wikilinks; idempotent upsert on title/path.
 
 ### 1.5 Indexing & sync
@@ -45,21 +45,21 @@
   pre-filter. Pinned by ADR-0009 (Accepted).
 - **V1-9.** A file watcher (chokidar) detecting create/modify/delete/move,
   debounced for burst saves, triggering incremental re-index.
-- **V1-10.** `brain_status` — vault path, total/indexed/pending, last sync,
+- **V1-10.** `devbrain_status` — vault path, total/indexed/pending, last sync,
   errors.
-- **V1-11.** `brain_rebuild` — wipe + rebuild derived stores from the vault
+- **V1-11.** `devbrain_rebuild` — wipe + rebuild derived stores from the vault
   (full) or re-index by note IDs (incremental).
 
 ### 1.6 Configuration & admin
 - **V1-12.** Layered typed config (defaults < env < file < CLI flags).
-- **V1-13.** `brain_config_get` / `brain_config_set` for runtime-safe keys
+- **V1-13.** `devbrain_config_get` / `devbrain_config_set` for runtime-safe keys
   only (model, log level, budgets).
 
 ### 1.7 MCP server & CLI
 - **V1-14.** An MCP server over stdio exposing the tools above, with schema
   validation, structured outputs, provenance on results, and no business logic
   in the MCP layer.
-- **V1-15.** A `brain` CLI with `index`, `search`, `status` (thin caller of
+- **V1-15.** A `devbrain` CLI with `index`, `search`, `status` (thin caller of
   core).
 
 ### 1.8 Architecture, quality & onboarding
@@ -67,7 +67,7 @@
   ports in `core/ports/`, adapters for concrete tech, and a single composition
   root.
 - **V1-17.** Unit tests (co-located, in-memory fakes) for all core logic;
-  integration tests for the vault round-trip; one e2e test driving MCP → Brain →
+  integration tests for the vault round-trip; one e2e test driving MCP → DevBrain →
   sample vault.
 - **V1-18.** A sample vault in `examples/` and a getting-started doc in
   `docs/user/`.
@@ -84,20 +84,20 @@ addition is an increment, not a rewrite.
 
 | Out of MVP | Why out | Where it lives later |
 |---|---|---|
-| Semantic / vector search (`brain_search_semantic`, `brain_search_hybrid`) | Prove the loop with lexical first; avoid a mandatory Ollama dependency in the first release. | Phase 2 |
+| Semantic / vector search (`devbrain_search_semantic`, `devbrain_search_hybrid`) | Prove the loop with lexical first; avoid a mandatory Ollama dependency in the first release. | Phase 2 |
 | Embeddings / Ollama integration | Same — and to keep the first release light. | Phase 2 (ADR-0007) |
 | Vector store (LanceDB) | Same. | Phase 2 (ADR-0005) |
-| Knowledge graph tools (`brain_graph_*`) | Relationship traversal is a later increment; FTS is enough to prove retrieval. | Phase 3 |
-| `brain_append`, `brain_forget`, `brain_tag` | Richer memory lifecycle is Phase 4; the MVP writes via `brain_remember`. | Phase 4 |
+| Knowledge graph tools (`devbrain_graph_*`) | Relationship traversal is a later increment; FTS is enough to prove retrieval. | Phase 3 |
+| `devbrain_append`, `devbrain_forget`, `devbrain_tag` | Richer memory lifecycle is Phase 4; the MVP writes via `devbrain_remember`. | Phase 4 |
 | Reviewable auto-memory (propose→confirm) | Autonomous writes are never an MVP goal. | Phase 4 |
-| `brain_build_context` (token-budgeted bundles) | Context assembly is Phase 5; MVP loads memory via recall/search. | Phase 5 |
-| `brain_extract`, `brain_index_source`, auto-linking, dedup, gap detection | AI curation is Phase 6. | Phase 6 |
+| `devbrain_build_context` (token-budgeted bundles) | Context assembly is Phase 5; MVP loads memory via recall/search. | Phase 5 |
+| `devbrain_extract`, `devbrain_index_source`, auto-linking, dedup, gap detection | AI curation is Phase 6. | Phase 6 |
 | HTTP/SSE (multi-client) transport | Multi-client is a future need; stdio is the local MVP transport. | Post-1.0 (ADR-0011) |
 | Multi-vault support | Single vault proves the model; namespacing is a later increment. | Post-1.0 |
 | Remote embedding backend | Privacy-first default is local; remote is opt-in only, and not in MVP. | Post-1.0 (ADR-0004) |
 | Plugin SDK | Community adapters register at the composition root today; a formal SDK is later. | Post-1.0 |
-| Obsidian companion plugin | In-vault UX is a thin client on top of a stable Brain; later. | Post-1.0 |
-| Git-backed vault history/diffs | Brain doesn't version the vault in MVP; the user brings backups. | Post-1.0 |
+| Obsidian companion plugin | In-vault UX is a thin client on top of a stable DevBrain; later. | Post-1.0 |
+| Git-backed vault history/diffs | DevBrain doesn't version the vault in MVP; the user brings backups. | Post-1.0 |
 | Telemetry / analytics / crash reporting | Never (privacy-first). | Never |
 | A hosted / SaaS offering | Never (local-first by definition). | Never |
 | Central enterprise governance / SSO / SLAs | Out of target market. | Never (for the foreseeable roadmap) |
@@ -133,7 +133,7 @@ the deferral rationale.
 ### 3.3 Richer memory lifecycle — append / forget / tag (postponed to Phase 4)
 - **Want it because** low-friction, safe writes (append without rewrite;
   reversible archive; confirm-gated delete) are central to the UX.
-- **Postpone because** the MVP's write path (`brain_remember` upsert) already
+- **Postpone because** the MVP's write path (`devbrain_remember` upsert) already
   proves durable, idempotent writes. The richer ops add safety/ergonomics, not
   the core loop.
 - **Seam left:** storage authority and upsert semantics are in place; append /
@@ -167,7 +167,7 @@ the deferral rationale.
   identifiers, error strings) and needs no model server — so the first release
   is light and runnable in minutes.
 - **No mandatory external service.** The MVP has zero daemons (SQLite + files,
-  in-process). Ollama is *not* required to try Brain. This keeps first-run
+  in-process). Ollama is *not* required to try DevBrain. This keeps first-run
   friction minimal.
 - **Seams, not shortcuts.** Every deferred capability has a port already
   designed in, so Phases 2–6 are *additive* (new adapters/tools), not rewrites.
@@ -181,20 +181,20 @@ the deferral rationale.
 These mirror the acceptance criteria in `docs/REQUIREMENTS.md` and the
 measurable targets in `docs/SUCCESS_CRITERIA.md`:
 
-1. A user points Brain at a vault, starts the MCP server, and Claude Code can
-   invoke Brain tools over stdio (Windows + Linux).
-2. Claude creates a memory with `brain_remember`; it appears as valid Markdown
+1. A user points DevBrain at a vault, starts the MCP server, and Claude Code can
+   invoke DevBrain tools over stdio (Windows + Linux).
+2. Claude creates a memory with `devbrain_remember`; it appears as valid Markdown
    with a stable ID; re-saving is idempotent (no duplicate).
 3. In a *fresh* session, Claude recalls that memory by ID and finds it by
-   keyword with `brain_search_lexical`.
-4. Editing a note in Obsidian triggers incremental re-indexing; `brain_status`
+   keyword with `devbrain_search_lexical`.
+4. Editing a note in Obsidian triggers incremental re-indexing; `devbrain_status`
    reflects it; the updated content is searchable.
-5. `brain_rebuild --full` reproduces derived stores from the vault; deleting
+5. `devbrain_rebuild --full` reproduces derived stores from the vault; deleting
    derived stores first loses nothing.
 6. A path-traversal write is rejected; no outbound network call exists outside
    an off-by-default flag; no telemetry code.
 7. All MVP tools have passing unit tests; one integration test covers the vault
-   round-trip; one e2e drives MCP → Brain → sample vault.
+   round-trip; one e2e drives MCP → DevBrain → sample vault.
 8. The layering rule is enforced by lint, and Core unit tests pass with
    in-memory fakes.
 

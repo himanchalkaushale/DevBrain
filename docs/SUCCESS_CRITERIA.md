@@ -1,4 +1,4 @@
-# Project Brain — Success Criteria
+# DevBrain — Success Criteria
 
 > **Phase 1: Product Specification.** This document defines **measurable** goals
 > for the MVP (Version 1 / Phase 1). Each criterion is binary or quantified, has
@@ -16,14 +16,14 @@
 ## 1. Headline success criteria (the loop)
 
 ### C-1 — The MCP server connects to an Obsidian vault
-- **Measure:** On Windows and Linux, Brain attaches to a real vault directory,
+- **Measure:** On Windows and Linux, DevBrain attaches to a real vault directory,
   exposes its MCP tools over stdio, and Claude Code successfully invokes them.
-- **Pass when:** A fresh `brain` server started against a sample vault responds
-  to a `brain_status` call from an MCP client with a non-error result.
+- **Pass when:** A fresh `devbrain` server started against a sample vault responds
+  to a `devbrain_status` call from an MCP client with a non-error result.
 - **Maps to:** FR-1.1, FR-6.1, AC-1, CO-1, CO-2.
 
 ### C-2 — Notes can be created
-- **Measure:** `brain_remember` creates a Markdown note in the vault with valid
+- **Measure:** `devbrain_remember` creates a Markdown note in the vault with valid
   frontmatter (`id`, `type`, `created`, `updated`, `source`, tags, links) and a
   stable, sortable, URL-safe ID.
 - **Pass when:** The note exists on disk and is parseable back into the
@@ -31,22 +31,22 @@
 - **Maps to:** FR-4.1, FR-4.3, AC-2.
 
 ### C-3 — Notes can be updated (idempotently)
-- **Measure:** Re-calling `brain_remember` with the same title/path does not
+- **Measure:** Re-calling `devbrain_remember` with the same title/path does not
   create a duplicate; the stable ID is preserved and `updated` advances.
 - **Pass when:** After N repeated identical writes, exactly one note exists for
   that key.
 - **Maps to:** FR-4.2, FR-4.4, AC-3.
 
 ### C-4 — Notes can be recalled by ID and by recency
-- **Measure:** `brain_recall_by_id` returns the memory (immediately after write,
-  before indexing completes); `brain_recall_recent` lists most-recently changed
+- **Measure:** `devbrain_recall_by_id` returns the memory (immediately after write,
+  before indexing completes); `devbrain_recall_recent` lists most-recently changed
   memories scoped by optional tags/window.
 - **Pass when:** A just-written memory is recallable by ID within the same
-  session, and `brain_recall_recent` ordering matches modification time.
+  session, and `devbrain_recall_recent` ordering matches modification time.
 - **Maps to:** FR-2.1, FR-2.2, FR-2.3, AC-4, AC-5.
 
 ### C-5 — Keyword search works
-- **Measure:** `brain_search_lexical` returns ranked results for an exact
+- **Measure:** `devbrain_search_lexical` returns ranked results for an exact
   string/identifier, supports tag/date filters, and respects `limit`/token
   budget.
 - **Pass when:** Searching for a known exact token in a fixture vault returns the
@@ -57,7 +57,7 @@
 - **Measure:** A memory written in one session is findable by keyword in a
   *fresh* session with no in-memory state carried over.
 - **Pass when:** Server is stopped, restarted against the same vault, and the
-  previously written memory is returned by `brain_search_lexical`.
+  previously written memory is returned by `devbrain_search_lexical`.
 - **Maps to:** G1, FR-3.1, AC-4. (This is the MVP's central proof.)
 
 ---
@@ -105,7 +105,7 @@
 
 ### C-12 — Derived stores are rebuildable from the vault
 - **Measure:** Deleting the derived (metadata + FTS) stores and running
-  `brain_rebuild --full` reproduces them; no memory is lost.
+  `devbrain_rebuild --full` reproduces them; no memory is lost.
 - **Pass when:** Search results before and after a wipe+rebuild are identical
   for a fixture vault.
 - **Maps to:** FR-5.5, NFR-4, ADR-0001, AC-7.
@@ -142,13 +142,13 @@
 - **Maps to:** PR-1.
 
 ### C-17 — Lexical search latency
-- **Measure:** `brain_search_lexical` on a personal vault (hundreds of notes)
+- **Measure:** `devbrain_search_lexical` on a personal vault (hundreds of notes)
   returns in **< 1 s (p95)**.
 - **Pass when:** p95 over the benchmark workload is under the target.
 - **Maps to:** PR-2.
 
 ### C-18 — Recall-by-ID is constant-time
-- **Measure:** `brain_recall_by_id` latency is effectively flat regardless of
+- **Measure:** `devbrain_recall_by_id` latency is effectively flat regardless of
   vault size (direct lookup).
 - **Pass when:** Recall latency on the large-vault fixture is within a small
   constant of the small-vault fixture.
@@ -173,8 +173,8 @@
   after recovery.
 - **Maps to:** PR-4, SR-10, FR-5.
 
-### C-21 — `brain_status` reports accurate sync state
-- **Measure:** `brain_status` reports vault path, total, indexed, pending, last
+### C-21 — `devbrain_status` reports accurate sync state
+- **Measure:** `devbrain_status` reports vault path, total, indexed, pending, last
   sync, and errors consistent with the actual vault state.
 - **Pass when:** Counts match a controlled fixture after a known set of writes
   and edits.
@@ -201,7 +201,7 @@
 
 ### C-24 — All MVP features are covered by tests
 - **Measure:** Every MVP MCP tool and CLI command has a passing unit test; one
-  integration test covers the vault round-trip; one e2e drives MCP → Brain →
+  integration test covers the vault round-trip; one e2e drives MCP → DevBrain →
   sample vault.
 - **Pass when:** Coverage gates pass for the MVP surface; integration + e2e
   tests are green, not skipped.
@@ -212,13 +212,13 @@
   `docs/MCP_TOOLS.md`, `CHANGELOG.md`); the getting-started guide walks a new
   user to a working setup in minutes.
 - **Pass when:** A reviewer following the getting-started guide from a clean
-  checkout reaches a working `brain status` without external help.
+  checkout reaches a working `devbrain status` without external help.
 - **Maps to:** NFR-12, AC-11, V1-18.
 
 ### C-26 — First-run is low-friction (no mandatory external service)
 - **Measure:** The MVP runs with no daemon and no mandatory model server —
   SQLite + files, in-process. Ollama is *not* required to use Version 1.
-- **Pass when:** A clean install + configure + `brain index` + `brain search`
+- **Pass when:** A clean install + configure + `devbrain index` + `devbrain search`
   works with only the bundled dependencies.
 - **Maps to:** NFR-1, ADR-0013, MVP thesis.
 

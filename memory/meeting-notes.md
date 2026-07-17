@@ -4,6 +4,19 @@
 > sessions. Date-stamped, newest at top. Keep entries short; link to ADRs for
 > durable decisions.
 
+## 2026-07-17 — Project renamed to DevBrain
+
+The project was officially renamed **Project Brain → DevBrain**. This was a
+repository-wide branding migration (prose product name, the `brain`/`brain_*`
+CLI and MCP tool identifiers → `devbrain`/`devbrain_*`, `brain.config.ts` →
+`devbrain.config.ts`, `.brainrc` → `.devbrainrc`, repo-root diagram
+`project-brain/` → `devbrain/`).
+
+Per the migration policy, **historical entries below are preserved verbatim** —
+they intentionally record the old name "Project Brain" as it was used at the
+time. They are not rewritten. Read them as historical record, not current
+naming. (Project Brain was renamed to DevBrain on 2026-07-17.)
+
 ## 2026-07-17 — Initial architecture design (AI working session)
 
 **Context:** Greenfield design of Project Brain. Goal: produce the complete
